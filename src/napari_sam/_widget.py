@@ -128,6 +128,8 @@ class SamWidget(QWidget):
         self.rb_auto.setToolTip("Creates automatically an instance segmentation \n"
                                             "of the entire image.\n"
                                             "No user interaction possible.")
+        self.rb_auto.setEnabled(False)
+        
         self.l_annotation.addWidget(self.rb_auto)
         self.rb_auto.clicked.connect(self.on_everything_mode_checked)
 
