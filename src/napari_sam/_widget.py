@@ -136,7 +136,7 @@ class SamWidget(QWidget):
 
         self.g_segmentation = QGroupBox("Segmentation mode")
         self.l_segmentation = QVBoxLayout()
-
+        
         self.rb_semantic = QRadioButton("Semantic")
         self.rb_semantic.setChecked(True)
         self.rb_semantic.setToolTip("Enables the user to create a \n"
@@ -953,15 +953,31 @@ class SamWidget(QWidget):
 
         if prediction is not None:
             label_layer = np.asarray(self.label_layer.data)
+
+            # CB addition to get working with mask which has instance and semantic channels
+            if label_layer.ndim==3 and label_layer.shape[0]==2:
+                if self.segmentation_mode == SegmentationMode.SEMANTIC:
+                    working_mask = label_layer[1]
+                else: working_mask = label_layer[0]
+            else: working_mask = label_layer
+
             changed_indices = np.where(prediction == 1)
-            index_labels_old = label_layer[changed_indices]
-            label_layer[x_coord][label_layer[x_coord] == point_label] = 0
+            index_labels_old = working_mask[changed_indices]
+            working_mask[x_coord][working_mask[x_coord] == point_label] = 0
             if self.segmentation_mode == SegmentationMode.SEMANTIC or point_label == 0:
-                label_layer[prediction == 1] = point_label
+                working_mask[prediction == 1] = point_label
             else:
-                label_layer[(prediction == 1) & (label_layer == 0)] = point_label
-            index_labels_new = label_layer[changed_indices]
+                working_mask[(prediction == 1) & (working_mask == 0)] = point_label
+            index_labels_new = working_mask[changed_indices]
             self.label_layer_changes = {"indices": changed_indices, "old_values": index_labels_old, "new_values": index_labels_new}
+            
+            # CB addition to get working with mask which has instance and semantic channels
+            if label_layer.ndim==3 and label_layer.shape[0]==2:
+                if self.segmentation_mode == SegmentationMode.SEMANTIC:
+                    label_layer[1] = working_mask
+                else: label_layer[0] = working_mask
+            else: label_layer = working_mask
+             
             self.label_layer.data = label_layer
             self.old_points = copy.deepcopy(self.points_layer.data)
             # self.label_layer.refresh()
