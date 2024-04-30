@@ -15,6 +15,8 @@ We have already **extended** SAM's click-based foreground separation to full **c
 
 At last, our SAM integration supports both **2D and 3D images**!
 
+**Please note: This repo has been adapted from the original plugin to work with 2-channel masks for the specific use case of the [data centric platform tool](https://github.com/HelmholtzAI-Consultants-Munich/data-centric-platform). 3D support in this case is not suppported.**
+
 ----------------------------------
 
 Everything mode             |  Click-based semantic segmentation mode |  Click-based instance segmentation mode
