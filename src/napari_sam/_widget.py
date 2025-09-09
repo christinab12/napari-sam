@@ -501,7 +501,7 @@ class SamWidget(QWidget):
         # Inform all comboboxes on layer changes with the viewer.layer_change event
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=FutureWarning)
-            self.viewer.layers.events.layers_change.connect(self._on_layers_changed)
+            self.viewer.layers.events.connect(self._on_layers_changed)
 
         # viewer.layer_change event does not inform about layer name changes, so we have to register a separate event to each layer and each layer that will be created
 
@@ -1177,7 +1177,11 @@ class SamWidget(QWidget):
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=UserWarning)
-            self.points_layer = self.viewer.add_points(name=self.points_layer_name, data=np.asarray(points_flattened), face_color=colors_flattended, edge_color="white", size=self.point_size)
+            self.points_layer = self.viewer.add_points(name=self.points_layer_name,
+                                                       data=np.asarray(points_flattened),
+                                                       face_color=colors_flattended,
+                                                       border_color="white",
+                                                       size=self.point_size)
         self.points_layer.editable = False
 
         if selected_layer is not None:
